@@ -18,7 +18,7 @@ namespace Bilbasen
                 Console.WriteLine("3. Vis alle røde biler");
                 Console.WriteLine("4. Vis antal af biler med samme mærke som den første bil");
                 Console.WriteLine("5. Vis biler fra 1980 - 1999");
-                Console.WriteLine("6. Vis alle biler"); 
+                Console.WriteLine("6. Vis alle biler");
                 Console.WriteLine("0. Afslut");
 
                 Console.Write("Vælg en mulighed: ");
@@ -44,7 +44,7 @@ namespace Bilbasen
                         break;
 
                     case "5":
-                        PrintCarsByYearRange(1980,1999);
+                        PrintCarsByYearRange(1980, 1999);
                         break;
 
                     case "6":
@@ -53,11 +53,11 @@ namespace Bilbasen
 
                     case "0":
                         return;
+
                     default:
                         Console.WriteLine("Ugyldigt valg. Prøv igen.");
                         break;
                 }
-
             }
         }
 
@@ -77,7 +77,7 @@ namespace Bilbasen
                 Color = color;
                 HorsePower = horsePower;
                 NumberOfCylinders = numberOfCylinders;
-            } 
+            }
 
             public override string ToString()
             {
@@ -109,12 +109,6 @@ namespace Bilbasen
             return cars;
         }
 
-        static void PrintAllCars()
-        {
-            Console.WriteLine("-- Alle biler --");
-            cars.ForEach (c => Console.WriteLine(c));
-        }
-
         static void PrintSameBrandAsFirstCar()
         {
             string firstbrand = cars[0].Brand;
@@ -126,15 +120,6 @@ namespace Bilbasen
 
         }
 
-        static void PrintCarsByYearRange(int fromYear, int toYear)
-        {
-            Console.WriteLine($"-- Biler fra årgang {fromYear} til {toYear} --");
-            cars.Where(c => c.Year >= fromYear && c.Year <= toYear)
-                .ToList()
-                .ForEach(c => Console.WriteLine(c));
-        }
-
-
         static void PrintCarsWithOver200HP(int minimumHP)
         {
             Console.WriteLine($"-- Biler med over {minimumHP} hk --");
@@ -143,7 +128,6 @@ namespace Bilbasen
                 .ForEach(c => Console.WriteLine(c));
 
         }
-
 
         static void PrintRedCars(string color)
         {
@@ -161,10 +145,25 @@ namespace Bilbasen
 
             var antal = cars.Count(c => c.Brand == firstbrand);
             Console.WriteLine($"Antal biler med samme mærke som {firstbrand} - {antal}");
-            
+
 
 
         }
-    }
 
+        static void PrintCarsByYearRange(int fromYear, int toYear)
+        {
+            Console.WriteLine($"-- Biler fra årgang {fromYear} til {toYear} --");
+            cars.Where(c => c.Year >= fromYear && c.Year <= toYear)
+                .ToList()
+                .ForEach(c => Console.WriteLine(c));
+        }
+
+
+        static void PrintAllCars()
+        {
+            Console.WriteLine("-- Alle biler --");
+            cars.ForEach(c => Console.WriteLine(c));
+        }
+
+    }
 }
