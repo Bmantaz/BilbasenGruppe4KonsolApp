@@ -32,19 +32,19 @@ namespace Bilbasen
                         break;
 
                     case "2":
-                        //PrintCarsWithOver200HP();
+                        PrintCarsWithOver200HP(200);
                         break;
 
                     case "3":
-                        //PrintRedCars();
+                        PrintRedCars("Red");
                         break;
 
                     case "4":
-                        PrintSameBrandAsFirstCar();
+                        PrintCountBrandAsFirstCar();
                         break;
 
                     case "5":
-                        //PrintCarsFrom1980To1999();
+                        PrintCarsByYearRange(1980,1999);
                         break;
 
                     case "6":
@@ -120,21 +120,51 @@ namespace Bilbasen
             string firstbrand = cars[0].Brand;
 
             Console.WriteLine($"Biler med samme mærke som {firstbrand}:");
-            foreach (var car in cars.Where(c => c.Brand == firstbrand))
-            {
-                
-            }
+            cars.Where(c => c.Brand == firstbrand)
+                .ToList()
+                .ForEach(c => Console.WriteLine(c));
 
         }
 
         static void PrintCarsByYearRange(int fromYear, int toYear)
         {
-            Console.Writeline($"-- Biler fra årgang {fromYear} til {toYear} --");
+            Console.WriteLine($"-- Biler fra årgang {fromYear} til {toYear} --");
             cars.Where(c => c.Year >= fromYear && c.Year <= toYear)
                 .ToList()
                 .ForEach(c => Console.WriteLine(c));
         }
 
+
+        static void PrintCarsWithOver200HP(int minimumHP)
+        {
+            Console.WriteLine($"-- Biler med over {minimumHP} hk --");
+            cars.Where(c => c.HorsePower > minimumHP)
+                .ToList()
+                .ForEach(c => Console.WriteLine(c));
+
+        }
+
+
+        static void PrintRedCars(string color)
+        {
+            Console.WriteLine($"-- Biler med farven {color} --");
+            cars.Where(c => c.Color == color)
+                .ToList()
+                .ForEach(c => Console.WriteLine(c));
+
+        }
+
+
+        static void PrintCountBrandAsFirstCar()
+        {
+            string firstbrand = cars[0].Brand;
+
+            var antal = cars.Count(c => c.Brand == firstbrand);
+            Console.WriteLine($"Antal biler med samme mærke som {firstbrand} - {antal}");
+            
+
+
+        }
     }
 
 }
