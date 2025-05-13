@@ -1,4 +1,5 @@
 ﻿using System.Net.WebSockets;
+using System.Security.Cryptography.X509Certificates;
 namespace Bilbasen
 {
     internal class Program
@@ -165,5 +166,129 @@ namespace Bilbasen
             cars.ForEach(c => Console.WriteLine(c));
         }
 
+
+
+
+
+
+
+
+        public interface IVehicle
+        {
+            string Brand { get; set; }
+            string Model { get; set; }
+            int Year { get; set; }
+            string Color { get; set; }
+            int HorsePower { get; set; }
+            decimal Price { get; set; }
+        }
+
+
+        public abstract class Vehicle : IVehicle
+        {
+            private string _brand;
+            private string _model;
+            private int _year;
+            private string _color;
+            private int _horsePower;
+            private decimal _price;
+            public int Year { get => _year; set => _year = value; }
+            public string Color { get => _color; set => _color = value; }
+            public int HorsePower { get => _horsePower; set => _horsePower = value; }
+            public decimal Price { get => _price; set => _price = value; }
+            public string Brand { get => _brand; set => _brand = value; }
+            public string Model { get => _model; set => _model = value; }
+
+            protected Vehicle(string brand, string model, int year, string color, int horsePower, decimal price)
+            {
+                Brand = brand;
+                Model = model;
+                Year = year;
+                Color = color;
+                Price = price;
+                HorsePower = horsePower;
+
+            }
+
+            public abstract override string ToString();
+
+        }
+
+
+
+
+
+        public class FuelCar : Vehicle
+        {
+            private int _NumberOfCylinders;
+
+            public int NumberOfCylinders { get => _NumberOfCylinders; set => _NumberOfCylinders = value; }
+
+
+            public FuelCar(string brand, string model, int year, string color, int horsePower, int _NumberOfCylinders, decimal price)
+                          : base(brand, model, year, color, horsePower, price)
+
+            {
+                NumberOfCylinders = _NumberOfCylinders;
+            }
+
+
+            public override string ToString()
+            {
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {NumberOfCylinders} cyl";
+            }
+
+        }
+
+        public class ElectricCar : Vehicle
+        {
+            private int _BatteryCapacity;
+
+            public int BatteryCapacity { get => _BatteryCapacity; set => _BatteryCapacity = value; }
+
+
+            public ElectricCar(string brand, string model, int year, string color, int horsePower, int _BatteryCapacity, decimal price)
+                          : base(brand, model, year, color, horsePower, price)
+
+            {
+                BatteryCapacity = _BatteryCapacity;
+            }
+
+
+            public override string ToString()
+            {
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {BatteryCapacity} cyl";
+            }
+
+        }
+
+        public class Motorcycle : Vehicle
+        {
+            private bool _HasSideCar;
+
+            public bool HasSideCar { get => _HasSideCar; set => _HasSideCar = value; }
+
+
+            public Motorcycle(string brand, string model, int year, string color, int horsePower, bool _HasSideCar, decimal price)
+                          : base(brand, model, year, color, horsePower, price)
+
+            {
+                HasSideCar = _HasSideCar;
+            }
+
+
+            public override string ToString()
+            {
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCar} cyl";
+            }
+
+        }
+
+
+
+
+
+
     }
+
 }
