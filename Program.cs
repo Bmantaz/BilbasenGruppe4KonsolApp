@@ -35,23 +35,23 @@ namespace Bilbasen
                         break;
 
                     case "2":
-                        PrintCarsWithOver200HP(200);
+                        PrintVehiclesWithOver200HP(200);
                         break;
 
                     case "3":
-                        PrintRedCars("Red");
+                        PrintRedVehicles("Red");
                         break;
 
                     case "4":
-                        PrintCountBrandAsFirstCar();
+                        PrintCountBrandAsFirstVehicle();
                         break;
 
                     case "5":
-                        PrintCarsByYearRange(1980, 1999);
+                        PrintVehiclesByYearRange(1980, 1999);
                         break;
 
                     case "6":
-                        PrintAllCars();
+                        PrintAllVehicles();
                         break;
 
                     case "0":
@@ -64,7 +64,6 @@ namespace Bilbasen
             }
         }
 
-
         private static List<IVehicle> GenerateVehicles(int count)
         {
             Random rand = new Random();
@@ -75,9 +74,6 @@ namespace Bilbasen
             var rnd = new Random();
             var cylinderOptions = new[] { 3, 4, 5, 6, 8, 10, 12 };
             var vehicles = new List<IVehicle>();
-
-
-
 
             for (int i = 0; i < count; i++)
             {
@@ -108,13 +104,8 @@ namespace Bilbasen
                         var mcbrand = mbrands[rnd.Next(mbrands.Length)];
                         vehicles.Add(new Motorcycle(mcbrand, model, year, color, horsePower, hasSideCar, price));
                         break;
-
-
-
                 }
-
             }
-
             return vehicles;
         }
 
@@ -129,7 +120,7 @@ namespace Bilbasen
 
         }
 
-        static void PrintCarsWithOver200HP(int minimumHP)
+        static void PrintVehiclesWithOver200HP(int minimumHP)
         {
             Console.WriteLine($"-- Biler med over {minimumHP} hk --");
             Vehicles.Where(v => v.HorsePower > minimumHP)
@@ -138,28 +129,24 @@ namespace Bilbasen
 
         }
 
-        static void PrintRedCars(string color)
+        static void PrintRedVehicles(string color)
         {
             Console.WriteLine($"-- Biler med farven {color} --");
             Vehicles.Where(v => v.Color == color)
                 .ToList()
                 .ForEach(v => Console.WriteLine(v));
-
         }
 
 
-        static void PrintCountBrandAsFirstCar()
+        static void PrintCountBrandAsFirstVehicle()
         {
             string firstbrand = Vehicles[0].Brand;
 
             var antal = Vehicles.Count(v => v.Brand == firstbrand);
             Console.WriteLine($"Antal køretøjer med samme mærke som {firstbrand} - {antal}");
-
-
-
         }
 
-        static void PrintCarsByYearRange(int fromYear, int toYear)
+        static void PrintVehiclesByYearRange(int fromYear, int toYear)
         {
             Console.WriteLine($"-- Køretøjer fra årgang {fromYear} til {toYear} --");
             Vehicles.Where(v => v.Year >= fromYear && v.Year <= toYear)
@@ -168,7 +155,7 @@ namespace Bilbasen
         }
 
 
-        static void PrintAllCars()
+        static void PrintAllVehicles()
         {
             Console.WriteLine("-- Alle køretøjer --");
             Vehicles.ForEach(v => Console.WriteLine(v));
@@ -179,8 +166,7 @@ namespace Bilbasen
 
 
 
-
-
+        //Interface
         public interface IVehicle
         {
             string Brand { get; set; }
@@ -191,7 +177,7 @@ namespace Bilbasen
             decimal Price { get; set; }
         }
 
-
+        //Abstrakt klasse til køretøjer
         public abstract class Vehicle : IVehicle
         {
             private string _brand;
@@ -222,14 +208,9 @@ namespace Bilbasen
             {
                 return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {Price} Dkk";
             }
-
-
         }
 
-
-
-
-
+        //Benzin bil klasse
         public class FuelCar : Vehicle
         {
             private int _NumberOfCylinders;
@@ -244,42 +225,37 @@ namespace Bilbasen
                 NumberOfCylinders = _NumberOfCylinders;
             }
 
-
             public override string ToString()
             {
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {NumberOfCylinders} cyl";
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {NumberOfCylinders} cyl, {Price} Dkk";
             }
-
         }
 
+        //Elbil klasse
         public class ElectricCar : Vehicle
         {
             private int _BatteryCapacity;
 
             public int BatteryCapacity { get => _BatteryCapacity; set => _BatteryCapacity = value; }
 
-
             public ElectricCar(string brand, string model, int year, string color, int horsePower, int _BatteryCapacity, decimal price)
                           : base(brand, model, year, color, horsePower, price)
-
             {
                 BatteryCapacity = _BatteryCapacity;
             }
 
-
             public override string ToString()
             {
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {BatteryCapacity} KWh";
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {BatteryCapacity} KWh, {Price} Dkk";
             }
-
         }
 
+        //Motorcykel klasse
         public class Motorcycle : Vehicle
         {
             private bool _HasSideCar;
 
             public bool HasSideCar { get => _HasSideCar; set => _HasSideCar = value; }
-
 
             public Motorcycle(string brand, string model, int year, string color, int horsePower, bool _HasSideCar, decimal price)
                           : base(brand, model, year, color, horsePower, price)
@@ -288,20 +264,11 @@ namespace Bilbasen
                 HasSideCar = _HasSideCar;
             }
 
-
             public override string ToString()
             {
                 var HasSideCarMessage = HasSideCar ? "Med Sidevogn" : "Uden Sidevogn";
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCarMessage}";
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCarMessage}, {Price} Dkk ";
             }
-
         }
-
-
-
-
-
-
     }
-
 }
