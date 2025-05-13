@@ -1,15 +1,17 @@
-﻿using System.Net.WebSockets;
+﻿using System.Drawing;
+using System.Net.WebSockets;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 namespace Bilbasen
 {
     internal class Program
     {
-        static List<Car> cars = new List<Car>();
+        static List<IVehicle> Vehicles = new List<IVehicle>();
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            cars = GenerateCars(100); //Generator til biler
+            Vehicles = GenerateVehicles(300); //Generator til biler
 
             while (true)
             {
@@ -29,7 +31,7 @@ namespace Bilbasen
                 switch (input)
                 {
                     case "1":
-                        PrintSameBrandAsFirstCar();
+                        PrintSameBrandAsFirstVehicle();
                         break;
 
                     case "2":
@@ -62,39 +64,18 @@ namespace Bilbasen
             }
         }
 
-        public class Car
-        {
-            public string Brand;
-            public string Model;
-            public int Year;
-            public string Color;
-            public int HorsePower;
-            public int NumberOfCylinders;
-            public Car(string brand, string model, int year, string color, int horsePower, int numberOfCylinders)
-            {
-                Brand = brand;
-                Model = model;
-                Year = year;
-                Color = color;
-                HorsePower = horsePower;
-                NumberOfCylinders = numberOfCylinders;
-            }
 
-            public override string ToString()
-            {
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {NumberOfCylinders} cyl";
-            }
-
-        }
-        static List<Car> GenerateCars(int count)
+        private static List<IVehicle> GenerateVehicles(int count)
         {
             Random rand = new Random();
             var brands = new[] { "Ford", "Toyota", "Chevrolet", "BMW", "Audi", "Honda", "Mercedes", "Volkswagen" };
             var models = new[] { "Model A", "Model B", "Model C", "Model D", "Model E" };
             var colors = new[] { "Red", "Blue", "Green", "Black", "White", "Silver", "Yellow" };
-            var cylinderOptions = new[] { 3, 4, 5, 6, 8, 12 };
             var rnd = new Random();
-            var cars = new List<Car>();
+            var vehicles = new List<IVehicle>();
+
+
+
 
             for (int i = 0; i < count; i++)
             {
@@ -103,28 +84,51 @@ namespace Bilbasen
                 var year = rnd.Next(1970, 2023);
                 var color = colors[rnd.Next(colors.Length)];
                 var horsePower = rnd.Next(100, 701);
-                var numberOfCylinders = cylinderOptions[rnd.Next(cylinderOptions.Length)];
-                cars.Add(new Car(brand, model, year, color, horsePower, numberOfCylinders));
+                var price = rnd.Next(50000, 2000001);
+
+                int type = rand.Next(3);
+
+                switch (type)
+                {
+                    case 0: //FuelCar
+                        int NumberOfCylinders = rand.Next(3, 13);
+                        vehicles.Add(new FuelCar(brand, model, year, color, horsePower, NumberOfCylinders, price));
+                        break;
+
+                    case 1: //ElectricCar
+                        int batteryCapacity = rand.Next(20, 101);
+                        vehicles.Add(new ElectricCar(brand, model, year, color, horsePower, batteryCapacity, price));
+                        break;
+
+                    case 2: //Motorcycle
+                        bool hasSideCar = rand.Next(2) == 0 ;
+                        vehicles.Add(new Motorcycle(brand, model, year, color, horsePower, hasSideCar, price));
+                        break;
+
+
+
+                }
+
             }
 
-            return cars;
+            return vehicles;
         }
 
-        static void PrintSameBrandAsFirstCar()
+        static void PrintSameBrandAsFirstVehicle()
         {
-            string firstbrand = cars[0].Brand;
+            string firstbrand = Vehicles[0].Brand;
 
-            Console.WriteLine($"Biler med samme mærke som {firstbrand}:");
-            cars.Where(c => c.Brand == firstbrand)
+            Console.WriteLine($"Kørtøjer med samme mærke som {firstbrand}:");
+            Vehicles.Where(v => v.Brand == firstbrand)
                 .ToList()
-                .ForEach(c => Console.WriteLine(c));
+                .ForEach(v => Console.WriteLine(v));
 
         }
 
         static void PrintCarsWithOver200HP(int minimumHP)
         {
             Console.WriteLine($"-- Biler med over {minimumHP} hk --");
-            cars.Where(c => c.HorsePower > minimumHP)
+            Vehicles.Where(c => c.HorsePower > minimumHP)
                 .ToList()
                 .ForEach(c => Console.WriteLine(c));
 
@@ -133,7 +137,7 @@ namespace Bilbasen
         static void PrintRedCars(string color)
         {
             Console.WriteLine($"-- Biler med farven {color} --");
-            cars.Where(c => c.Color == color)
+            Vehicles.Where(c => c.Color == color)
                 .ToList()
                 .ForEach(c => Console.WriteLine(c));
 
@@ -142,9 +146,9 @@ namespace Bilbasen
 
         static void PrintCountBrandAsFirstCar()
         {
-            string firstbrand = cars[0].Brand;
+            string firstbrand = Vehicles[0].Brand;
 
-            var antal = cars.Count(c => c.Brand == firstbrand);
+            var antal = Vehicles.Count(c => c.Brand == firstbrand);
             Console.WriteLine($"Antal biler med samme mærke som {firstbrand} - {antal}");
 
 
@@ -154,7 +158,7 @@ namespace Bilbasen
         static void PrintCarsByYearRange(int fromYear, int toYear)
         {
             Console.WriteLine($"-- Biler fra årgang {fromYear} til {toYear} --");
-            cars.Where(c => c.Year >= fromYear && c.Year <= toYear)
+            Vehicles.Where(c => c.Year >= fromYear && c.Year <= toYear)
                 .ToList()
                 .ForEach(c => Console.WriteLine(c));
         }
@@ -163,7 +167,7 @@ namespace Bilbasen
         static void PrintAllCars()
         {
             Console.WriteLine("-- Alle biler --");
-            cars.ForEach(c => Console.WriteLine(c));
+            Vehicles.ForEach(c => Console.WriteLine(c));
         }
 
 
@@ -210,7 +214,11 @@ namespace Bilbasen
 
             }
 
-            public abstract override string ToString();
+            public override string ToString()
+            {
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {Price} Dkk";
+            }
+
 
         }
 
