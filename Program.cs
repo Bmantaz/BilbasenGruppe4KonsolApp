@@ -267,7 +267,7 @@ namespace Bilbasen
             public override string ToString()
             {
                 var HasSideCarMessage = HasSideCar ? "Med Sidevogn" : "Uden Sidevogn";
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCarMessage}, {Price} Dkk ";
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCarMessage}, {Price:N0} Dkk ";
             }
         }
     }
