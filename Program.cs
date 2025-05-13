@@ -11,12 +11,12 @@ namespace Bilbasen
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            Vehicles = GenerateVehicles(300); //Generator til biler
+            Vehicles = GenerateVehicles(300); //Generator til køretøjer
 
             while (true)
             {
                 Console.WriteLine("Bilbasen");
-                Console.WriteLine("1. Vis biler med samme mærke som den første bil");
+                Console.WriteLine("1. Vis køretøjer med samme mærke som det første køretøjer");
                 Console.WriteLine("2. Vis biler med over 200 HK");
                 Console.WriteLine("3. Vis alle røde biler");
                 Console.WriteLine("4. Vis antal af biler med samme mærke som den første bil");
@@ -68,10 +68,12 @@ namespace Bilbasen
         private static List<IVehicle> GenerateVehicles(int count)
         {
             Random rand = new Random();
-            var brands = new[] { "Ford", "Toyota", "Chevrolet", "BMW", "Audi", "Honda", "Mercedes", "Volkswagen" };
+            var vbrands = new[] { "Ford", "Toyota", "Chevrolet", "BMW", "Audi", "Honda", "Mercedes", "Volkswagen" };
+            var mbrands = new[] { "Yamaha", "Suzuki", "Ducati", "BMW", "KTM", "Honda", "Kawasaki", "Augusta" };
             var models = new[] { "Model A", "Model B", "Model C", "Model D", "Model E" };
             var colors = new[] { "Red", "Blue", "Green", "Black", "White", "Silver", "Yellow" };
             var rnd = new Random();
+            var cylinderOptions = new[] { 3, 4, 5, 6, 8, 10, 12 };
             var vehicles = new List<IVehicle>();
 
 
@@ -79,7 +81,6 @@ namespace Bilbasen
 
             for (int i = 0; i < count; i++)
             {
-                var brand = brands[rnd.Next(brands.Length)];
                 var model = models[rnd.Next(models.Length)];
                 var year = rnd.Next(1970, 2023);
                 var color = colors[rnd.Next(colors.Length)];
@@ -91,18 +92,21 @@ namespace Bilbasen
                 switch (type)
                 {
                     case 0: //FuelCar
-                        int NumberOfCylinders = rand.Next(3, 13);
-                        vehicles.Add(new FuelCar(brand, model, year, color, horsePower, NumberOfCylinders, price));
+                        int NumberOfCylinders = cylinderOptions[rnd.Next(cylinderOptions.Length)];
+                        var fbrand = vbrands[rnd.Next(vbrands.Length)];
+                        vehicles.Add(new FuelCar(fbrand, model, year, color, horsePower, NumberOfCylinders, price));
                         break;
 
                     case 1: //ElectricCar
                         int batteryCapacity = rand.Next(20, 101);
-                        vehicles.Add(new ElectricCar(brand, model, year, color, horsePower, batteryCapacity, price));
+                        var ebrand = vbrands[rnd.Next(vbrands.Length)];
+                        vehicles.Add(new ElectricCar(ebrand, model, year, color, horsePower, batteryCapacity, price));
                         break;
 
                     case 2: //Motorcycle
                         bool hasSideCar = rand.Next(2) == 0 ;
-                        vehicles.Add(new Motorcycle(brand, model, year, color, horsePower, hasSideCar, price));
+                        var mcbrand = mbrands[rnd.Next(mbrands.Length)];
+                        vehicles.Add(new Motorcycle(mcbrand, model, year, color, horsePower, hasSideCar, price));
                         break;
 
 
@@ -128,18 +132,18 @@ namespace Bilbasen
         static void PrintCarsWithOver200HP(int minimumHP)
         {
             Console.WriteLine($"-- Biler med over {minimumHP} hk --");
-            Vehicles.Where(c => c.HorsePower > minimumHP)
+            Vehicles.Where(v => v.HorsePower > minimumHP)
                 .ToList()
-                .ForEach(c => Console.WriteLine(c));
+                .ForEach(v => Console.WriteLine(v));
 
         }
 
         static void PrintRedCars(string color)
         {
             Console.WriteLine($"-- Biler med farven {color} --");
-            Vehicles.Where(c => c.Color == color)
+            Vehicles.Where(v => v.Color == color)
                 .ToList()
-                .ForEach(c => Console.WriteLine(c));
+                .ForEach(v => Console.WriteLine(v));
 
         }
 
@@ -148,8 +152,8 @@ namespace Bilbasen
         {
             string firstbrand = Vehicles[0].Brand;
 
-            var antal = Vehicles.Count(c => c.Brand == firstbrand);
-            Console.WriteLine($"Antal biler med samme mærke som {firstbrand} - {antal}");
+            var antal = Vehicles.Count(v => v.Brand == firstbrand);
+            Console.WriteLine($"Antal køretøjer med samme mærke som {firstbrand} - {antal}");
 
 
 
@@ -157,17 +161,17 @@ namespace Bilbasen
 
         static void PrintCarsByYearRange(int fromYear, int toYear)
         {
-            Console.WriteLine($"-- Biler fra årgang {fromYear} til {toYear} --");
-            Vehicles.Where(c => c.Year >= fromYear && c.Year <= toYear)
+            Console.WriteLine($"-- Køretøjer fra årgang {fromYear} til {toYear} --");
+            Vehicles.Where(v => v.Year >= fromYear && v.Year <= toYear)
                 .ToList()
-                .ForEach(c => Console.WriteLine(c));
+                .ForEach(v => Console.WriteLine(v));
         }
 
 
         static void PrintAllCars()
         {
-            Console.WriteLine("-- Alle biler --");
-            Vehicles.ForEach(c => Console.WriteLine(c));
+            Console.WriteLine("-- Alle køretøjer --");
+            Vehicles.ForEach(v => Console.WriteLine(v));
         }
 
 
@@ -265,7 +269,7 @@ namespace Bilbasen
 
             public override string ToString()
             {
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {BatteryCapacity} cyl";
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {BatteryCapacity} KWh";
             }
 
         }
@@ -287,7 +291,8 @@ namespace Bilbasen
 
             public override string ToString()
             {
-                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCar} cyl";
+                var HasSideCarMessage = HasSideCar ? "Med Sidevogn" : "Uden Sidevogn";
+                return $"{Year} {Brand} {Model} - {Color}, {HorsePower} HK, {HasSideCarMessage}";
             }
 
         }
